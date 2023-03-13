@@ -2865,6 +2865,106 @@ web_identity_token_file = no-such-file
 	}
 }
 
+func TestAssumeRoleWithWebIdentityChainedAssumeRole(t *testing.T) {
+	testCases := map[string]struct {
+		Config									 *Config
+		EnvironmentVariables		 map[string]string
+		ExpectedCredentialsValue aws.Credentials
+		ExpectedError						 func(err error) bool
+		MockStsEndpoints				 []*servicemocks.MockEndpoint
+		SetTokenFileEnvironmentVariable bool
+	}{
+		"envvar with config": {
+			Config: &Config{
+				AssumeRole: &AssumeRole{
+					RoleARN:		 servicemocks.MockStsAssumeRoleArn,
+					SessionName: servicemocks.MockStsAssumeRoleSessionName,
+				},
+			},
+			EnvironmentVariables: map[string]string{
+				"AWS_ROLE_ARN":					 servicemocks.MockStsAssumeRoleWithWebIdentityArn,
+				"AWS_ROLE_SESSION_NAME": servicemocks.MockStsAssumeRoleWithWebIdentitySessionName,
+			},
+			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
+			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleValidEndpoint,	// deliberately wrong order
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+			},
+			SetTokenFileEnvironmentVariable: true,
+		},
+	}
+
+	for testName, testCase := range testCases {
+		testCase := testCase
+
+		t.Run(testName, func(t *testing.T) {
+			oldEnv := servicemocks.InitSessionTestEnv()
+			defer servicemocks.PopEnv(oldEnv)
+
+			for k, v := range testCase.EnvironmentVariables {
+				os.Setenv(k, v)
+			}
+
+			closeSts, _, stsEndpoint := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
+			defer closeSts()
+
+			testCase.Config.StsEndpoint = stsEndpoint
+
+			tempdir, err := os.MkdirTemp("", "temp")
+			if err != nil {
+				t.Fatalf("error creating temp dir: %s", err)
+			}
+			defer os.Remove(tempdir)
+			os.Setenv("TMPDIR", tempdir)
+
+			tokenFile, err := os.CreateTemp("", "aws-sdk-go-base-web-identity-token-file")
+			if err != nil {
+				t.Fatalf("unexpected error creating temporary web identity token file: %s", err)
+			}
+			tokenFileName := tokenFile.Name()
+
+			defer os.Remove(tokenFileName)
+
+			err = os.WriteFile(tokenFileName, []byte(servicemocks.MockWebIdentityToken), 0600)
+
+			if err != nil {
+				t.Fatalf("unexpected error writing web identity token file: %s", err)
+			}
+
+			if testCase.SetTokenFileEnvironmentVariable {
+				os.Setenv("AWS_WEB_IDENTITY_TOKEN_FILE", tokenFileName)
+			}
+
+			testCase.Config.SkipCredsValidation = true
+
+			ctx, awsConfig, err := GetAwsConfig(context.Background(), testCase.Config)
+
+			if err != nil {
+				if testCase.ExpectedError == nil {
+					t.Fatalf("expected no error, got '%[1]T' error: %[1]s", err)
+				}
+
+				if !testCase.ExpectedError(err) {
+					t.Fatalf("unexpected GetAwsConfig() '%[1]T' error: %[1]s", err)
+				}
+
+				t.Logf("received expected '%[1]T' error: %[1]s", err)
+				return
+			}
+
+			credentialsValue, err := awsConfig.Credentials.Retrieve(ctx)
+
+			if err != nil {
+				t.Fatalf("unexpected credentials Retrieve() error: %s", err)
+			}
+
+			if diff := cmp.Diff(credentialsValue, testCase.ExpectedCredentialsValue, cmpopts.IgnoreFields(aws.Credentials{}, "Expires")); diff != "" {
+				t.Fatalf("unexpected credentials: (- got, + expected)\n%s", diff)
+			}
+		})
+	}
+}
+
 func TestGetAwsConfigWithAccountIDAndPartition(t *testing.T) {
 	oldEnv := servicemocks.InitSessionTestEnv()
 	defer servicemocks.PopEnv(oldEnv)
