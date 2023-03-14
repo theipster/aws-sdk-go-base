@@ -402,6 +402,8 @@ var (
 // MockAwsApiServer establishes a httptest server to simulate behaviour of a real AWS API server
 func MockAwsApiServer(svcName string, endpoints []*MockEndpoint) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		endpoints := endpoints
+
 		buf := new(bytes.Buffer)
 		if _, err := buf.ReadFrom(r.Body); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -413,19 +415,23 @@ func MockAwsApiServer(svcName string, endpoints []*MockEndpoint) *httptest.Serve
 		log.Printf("[DEBUG] Received %s API %q request to %q: %s",
 			svcName, r.Method, r.RequestURI, requestBody)
 
-		for _, e := range endpoints {
-			if r.Method == e.Request.Method && r.RequestURI == e.Request.Uri && requestBody == e.Request.Body {
-				log.Printf("[DEBUG] Mocked %s API responding with %d: %s",
-					svcName, e.Response.StatusCode, e.Response.Body)
+		if len(endpoints) == 0 {
+			fmt.Fprintf(w, "Error reading next mock endpoint: no more defined")
+			return
+		}
+		e := endpoints[0]
+		endpoints = endpoints[1:]
+		if r.Method == e.Request.Method && r.RequestURI == e.Request.Uri && requestBody == e.Request.Body {
+			log.Printf("[DEBUG] Mocked %s API responding with %d: %s",
+				svcName, e.Response.StatusCode, e.Response.Body)
 
-				w.WriteHeader(e.Response.StatusCode)
-				w.Header().Set("Content-Type", e.Response.ContentType)
-				w.Header().Set("X-Amzn-Requestid", "1b206dd1-f9a8-11e5-becf-051c60f11c4a")
-				w.Header().Set("Date", time.Now().Format(time.RFC1123))
+			w.WriteHeader(e.Response.StatusCode)
+			w.Header().Set("Content-Type", e.Response.ContentType)
+			w.Header().Set("X-Amzn-Requestid", "1b206dd1-f9a8-11e5-becf-051c60f11c4a")
+			w.Header().Set("Date", time.Now().Format(time.RFC1123))
 
-				fmt.Fprintln(w, e.Response.Body)
-				return
-			}
+			fmt.Fprintln(w, e.Response.Body)
+			return
 		}
 
 		w.WriteHeader(http.StatusBadRequest)
