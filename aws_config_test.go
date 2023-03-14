@@ -2889,6 +2889,7 @@ func TestAssumeRoleWithWebIdentityChainedAssumeRole(t *testing.T) {
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,	// deliberately wrong order
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 			SetTokenFileEnvironmentVariable: true,
 		},
