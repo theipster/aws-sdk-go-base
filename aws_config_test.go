@@ -2867,27 +2867,27 @@ web_identity_token_file = no-such-file
 
 func TestAssumeRoleWithWebIdentityChainedAssumeRole(t *testing.T) {
 	testCases := map[string]struct {
-		Config									 *Config
-		EnvironmentVariables		 map[string]string
-		ExpectedCredentialsValue aws.Credentials
-		ExpectedError						 func(err error) bool
-		MockStsEndpoints				 []*servicemocks.MockEndpoint
+		Config                          *Config
+		EnvironmentVariables            map[string]string
+		ExpectedCredentialsValue        aws.Credentials
+		ExpectedError                   func(err error) bool
+		MockStsEndpoints                []*servicemocks.MockEndpoint
 		SetTokenFileEnvironmentVariable bool
 	}{
 		"envvar with config": {
 			Config: &Config{
 				AssumeRole: &AssumeRole{
-					RoleARN:		 servicemocks.MockStsAssumeRoleArn,
+					RoleARN:     servicemocks.MockStsAssumeRoleArn,
 					SessionName: servicemocks.MockStsAssumeRoleSessionName,
 				},
 			},
 			EnvironmentVariables: map[string]string{
-				"AWS_ROLE_ARN":					 servicemocks.MockStsAssumeRoleWithWebIdentityArn,
+				"AWS_ROLE_ARN":          servicemocks.MockStsAssumeRoleWithWebIdentityArn,
 				"AWS_ROLE_SESSION_NAME": servicemocks.MockStsAssumeRoleWithWebIdentitySessionName,
 			},
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
-				servicemocks.MockStsAssumeRoleValidEndpoint,	// deliberately wrong order
+				servicemocks.MockStsAssumeRoleValidEndpoint, // deliberately wrong order
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
