@@ -402,8 +402,6 @@ var (
 // MockAwsApiServer establishes a httptest server to simulate behaviour of a real AWS API server
 func MockAwsApiServer(svcName string, endpoints []*MockEndpoint) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		endpoints := endpoints
-
 		buf := new(bytes.Buffer)
 		if _, err := buf.ReadFrom(r.Body); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
