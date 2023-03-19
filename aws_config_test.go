@@ -3035,7 +3035,7 @@ func TestGetAwsConfigWithAccountIDAndPartition(t *testing.T) {
 		tc := testCase
 
 		t.Run(tc.desc, func(t *testing.T) {
-			ts := servicemocks.MockAwsApiServer("STS", tc.mockStsEndpoints)
+			ts := servicemocks.MockAwsApiServer("STS", &tc.mockStsEndpoints)
 			defer ts.Close()
 			tc.config.StsEndpoint = ts.URL
 
@@ -3381,7 +3381,7 @@ func TestLogger(t *testing.T) {
 		SecretKey: servicemocks.MockStaticSecretKey,
 	}
 
-	ts := servicemocks.MockAwsApiServer("STS", []*servicemocks.MockEndpoint{
+	ts := servicemocks.MockAwsApiServer("STS", &[]*servicemocks.MockEndpoint{
 		servicemocks.MockStsGetCallerIdentityValidEndpoint,
 	})
 	defer ts.Close()

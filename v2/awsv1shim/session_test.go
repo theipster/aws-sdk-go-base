@@ -2504,7 +2504,7 @@ func TestLogger(t *testing.T) {
 	}
 
 	// config.SkipCredsValidation = true
-	ts := servicemocks.MockAwsApiServer("STS", []*servicemocks.MockEndpoint{
+	ts := servicemocks.MockAwsApiServer("STS", &[]*servicemocks.MockEndpoint{
 		servicemocks.MockStsGetCallerIdentityValidEndpoint,
 	})
 	defer ts.Close()

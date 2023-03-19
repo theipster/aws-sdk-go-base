@@ -400,7 +400,7 @@ var (
 )
 
 // MockAwsApiServer establishes a httptest server to simulate behaviour of a real AWS API server
-func MockAwsApiServer(svcName string, endpoints []*MockEndpoint) *httptest.Server {
+func MockAwsApiServer(svcName string, endpoints *[]*MockEndpoint) *httptest.Server {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		buf := new(bytes.Buffer)
 		if _, err := buf.ReadFrom(r.Body); err != nil {
@@ -413,12 +413,12 @@ func MockAwsApiServer(svcName string, endpoints []*MockEndpoint) *httptest.Serve
 		log.Printf("[DEBUG] Received %s API %q request to %q: %s",
 			svcName, r.Method, r.RequestURI, requestBody)
 
-		if len(endpoints) == 0 {
+		if len(*endpoints) == 0 {
 			fmt.Fprintf(w, "Error reading next mock endpoint: no more defined")
 			return
 		}
-		e := endpoints[0]
-		endpoints = endpoints[1:]
+		e := (*endpoints)[0]
+		*endpoints = (*endpoints)[1:]
 		if r.Method == e.Request.Method && r.RequestURI == e.Request.Uri && requestBody == e.Request.Body {
 			log.Printf("[DEBUG] Mocked %s API responding with %d: %s",
 				svcName, e.Response.StatusCode, e.Response.Body)
