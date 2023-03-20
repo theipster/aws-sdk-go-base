@@ -995,6 +995,7 @@ aws_secret_access_key = ProfileSharedCredentialsSecretKey
 `,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 			ExpectedCredentialsValue: mockdata.MockEnvCredentials,
 		},
@@ -1068,6 +1069,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 				}
 			}
 
+			// TODO check exhausted
 			closeSts, _, stsEndpoint := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
 			defer closeSts()
 
