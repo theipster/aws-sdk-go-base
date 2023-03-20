@@ -140,6 +140,7 @@ func TestGetSession(t *testing.T) {
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -158,6 +159,7 @@ func TestGetSession(t *testing.T) {
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
@@ -178,6 +180,7 @@ func TestGetSession(t *testing.T) {
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"ExternalId": servicemocks.MockStsAssumeRoleExternalId}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"ExternalId": servicemocks.MockStsAssumeRoleExternalId}),
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -197,6 +200,7 @@ func TestGetSession(t *testing.T) {
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"Policy": servicemocks.MockStsAssumeRolePolicy}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"Policy": servicemocks.MockStsAssumeRolePolicy}),
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -215,6 +219,7 @@ func TestGetSession(t *testing.T) {
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"PolicyArns.member.1.arn": servicemocks.MockStsAssumeRolePolicyArn}),
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"PolicyArns.member.1.arn": servicemocks.MockStsAssumeRolePolicyArn}),
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
@@ -236,6 +241,7 @@ func TestGetSession(t *testing.T) {
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"Tags.member.1.Key": servicemocks.MockStsAssumeRoleTagKey, "Tags.member.1.Value": servicemocks.MockStsAssumeRoleTagValue}),
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"Tags.member.1.Key": servicemocks.MockStsAssumeRoleTagKey, "Tags.member.1.Value": servicemocks.MockStsAssumeRoleTagValue}),
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
@@ -259,6 +265,7 @@ func TestGetSession(t *testing.T) {
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"Tags.member.1.Key": servicemocks.MockStsAssumeRoleTagKey, "Tags.member.1.Value": servicemocks.MockStsAssumeRoleTagValue, "TransitiveTagKeys.member.1": servicemocks.MockStsAssumeRoleTagKey}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"Tags.member.1.Key": servicemocks.MockStsAssumeRoleTagKey, "Tags.member.1.Value": servicemocks.MockStsAssumeRoleTagValue, "TransitiveTagKeys.member.1": servicemocks.MockStsAssumeRoleTagKey}),
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -277,6 +284,7 @@ func TestGetSession(t *testing.T) {
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"SourceIdentity": servicemocks.MockStsAssumeRoleSourceIdentity}),
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"SourceIdentity": servicemocks.MockStsAssumeRoleSourceIdentity}),
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
@@ -404,6 +412,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
@@ -555,6 +564,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 			SharedCredentialsFile: `
@@ -602,6 +612,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -631,6 +642,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			ExpectedRegion:             "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -649,6 +661,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -666,6 +679,8 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
@@ -1141,7 +1156,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 				}
 			}
 
-			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
+			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
 			defer closeSts()
 
 			if err != nil {
@@ -1237,6 +1252,11 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 
 			if expected, actual := testCase.ExpectedRegion, aws.StringValue(actualSession.Config.Region); expected != actual {
 				t.Fatalf("expected region (%s), got: %s", expected, actual)
+			}
+
+			numMockStsEndpoints := len(testCase.MockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 			}
 		})
 	}
@@ -1538,9 +1558,8 @@ use_fips_endpoint = true
 				os.Setenv(k, v)
 			}
 
-			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", []*servicemocks.MockEndpoint{
-				servicemocks.MockStsGetCallerIdentityValidEndpoint,
-			})
+			mockStsEndpoints := []*servicemocks.MockEndpoint{}
+			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", &mockStsEndpoints)
 			defer closeSts()
 
 			if err != nil {
@@ -1586,6 +1605,11 @@ use_fips_endpoint = true
 
 			if e, a := testCase.ExpectedUseDualStackEndpoint, actualSession.Config.UseDualStackEndpoint; e != a {
 				t.Errorf("expected UseDualStackEndpoint %q, got: %q", DualStackEndpointStateString(e), DualStackEndpointStateString(a))
+			}
+
+			numMockStsEndpoints := len(mockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 			}
 		})
 	}
@@ -1831,6 +1855,7 @@ func TestAssumeRole(t *testing.T) {
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 			},
 		},
 
@@ -1874,6 +1899,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 			},
 		},
 
@@ -1890,6 +1916,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
 			},
 		},
 
@@ -1905,6 +1932,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			},
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"Policy": "{}"}),
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"Policy": "{}"}),
 			},
 		},
@@ -1931,7 +1959,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			oldEnv := servicemocks.InitSessionTestEnv()
 			defer servicemocks.PopEnv(oldEnv)
 
-			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
+			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
 			defer closeSts()
 
 			if err != nil {
@@ -2005,6 +2033,11 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			if diff := cmp.Diff(credentialsValue, testCase.ExpectedCredentialsValue, cmpopts.IgnoreFields(credentials.Value{}, "ProviderName")); diff != "" {
 				t.Fatalf("unexpected credentials: (- got, + expected)\n%s", diff)
 			}
+
+			numMockStsEndpoints := len(testCase.MockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
+			}
 		})
 	}
 }
@@ -2033,6 +2066,7 @@ func TestAssumeRoleWithWebIdentity(t *testing.T) {
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 			},
 		},
 
@@ -2046,6 +2080,7 @@ func TestAssumeRoleWithWebIdentity(t *testing.T) {
 			SetConfig:                true,
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 			},
 		},
@@ -2061,6 +2096,7 @@ func TestAssumeRoleWithWebIdentity(t *testing.T) {
 			ExpandEnvVars:            true,
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 			},
 		},
@@ -2107,6 +2143,7 @@ role_session_name = %[2]s
 			},
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 			},
 		},
@@ -2161,6 +2198,7 @@ web_identity_token_file = no-such-file
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 			},
 		},
 
@@ -2176,6 +2214,7 @@ web_identity_token_file = no-such-file
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidWithOptions(map[string]string{"DurationSeconds": "3600"}),
 			},
 		},
 
@@ -2190,6 +2229,7 @@ web_identity_token_file = no-such-file
 			},
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidWithOptions(map[string]string{"Policy": "{}"}),
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidWithOptions(map[string]string{"Policy": "{}"}),
 			},
 		},
@@ -2230,7 +2270,7 @@ web_identity_token_file = no-such-file
 				os.Setenv(k, v)
 			}
 
-			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
+			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
 			defer closeSts()
 
 			if err != nil {
@@ -2340,6 +2380,11 @@ web_identity_token_file = no-such-file
 
 			if diff := cmp.Diff(credentialsValue, testCase.ExpectedCredentialsValue, cmpopts.IgnoreFields(credentials.Value{}, "ProviderName")); diff != "" {
 				t.Fatalf("unexpected credentials: (- got, + expected)\n%s", diff)
+			}
+
+			numMockStsEndpoints := len(testCase.MockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 			}
 		})
 	}
@@ -2504,9 +2549,10 @@ func TestLogger(t *testing.T) {
 	}
 
 	// config.SkipCredsValidation = true
-	ts := servicemocks.MockAwsApiServer("STS", []*servicemocks.MockEndpoint{
+	mockStsEndpoints := []*servicemocks.MockEndpoint{
 		servicemocks.MockStsGetCallerIdentityValidEndpoint,
-	})
+	}
+	ts := servicemocks.MockAwsApiServer("STS", &mockStsEndpoints)
 	defer ts.Close()
 	config.StsEndpoint = ts.URL
 
@@ -2538,5 +2584,10 @@ func TestLogger(t *testing.T) {
 		if a, e := line["@module"], expectedName; a != e {
 			t.Errorf("GetSession: line %d: expected module %q, got %q", i+1, e, a)
 		}
+	}
+
+	numMockStsEndpoints := len(mockStsEndpoints)
+	if numMockStsEndpoints > 0 {
+		t.Errorf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 	}
 }
