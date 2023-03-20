@@ -158,6 +158,7 @@ func TestGetAwsConfig(t *testing.T) {
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3599"}),
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
