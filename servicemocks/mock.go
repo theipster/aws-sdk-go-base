@@ -413,26 +413,21 @@ func MockAwsApiServer(svcName string, endpoints *[]*MockEndpoint) *httptest.Serv
 		log.Printf("[DEBUG] Received %s API %q request to %q: %s",
 			svcName, r.Method, r.RequestURI, requestBody)
 
-		for _, e := range *endpoints {
-			log.Printf("[DEBUG2] pre-checking endpoint: %s", e.Request.Body)
-		}
+		e := (*endpoints)[0]
+		log.Printf("[DEBUG2] checking endpoint: %s", e.Request.Body)
+		if r.Method == e.Request.Method && r.RequestURI == e.Request.Uri && requestBody == e.Request.Body {
+			log.Printf("[DEBUG] Mocked %s API responding with %d: %s",
+				svcName, e.Response.StatusCode, e.Response.Body)
 
-		for _, e := range *endpoints {
-			log.Printf("[DEBUG2] checking endpoint: %s", e.Request.Body)
-			if r.Method == e.Request.Method && r.RequestURI == e.Request.Uri && requestBody == e.Request.Body {
-				log.Printf("[DEBUG] Mocked %s API responding with %d: %s",
-					svcName, e.Response.StatusCode, e.Response.Body)
+			w.WriteHeader(e.Response.StatusCode)
+			w.Header().Set("Content-Type", e.Response.ContentType)
+			w.Header().Set("X-Amzn-Requestid", "1b206dd1-f9a8-11e5-becf-051c60f11c4a")
+			w.Header().Set("Date", time.Now().Format(time.RFC1123))
 
-				w.WriteHeader(e.Response.StatusCode)
-				w.Header().Set("Content-Type", e.Response.ContentType)
-				w.Header().Set("X-Amzn-Requestid", "1b206dd1-f9a8-11e5-becf-051c60f11c4a")
-				w.Header().Set("Date", time.Now().Format(time.RFC1123))
+			fmt.Fprintln(w, e.Response.Body)
 
-				fmt.Fprintln(w, e.Response.Body)
-
-				*endpoints = (*endpoints)[1:]
-				return
-			}
+			*endpoints = (*endpoints)[1:]
+			return
 		}
 
 		w.WriteHeader(http.StatusBadRequest)
