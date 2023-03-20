@@ -213,10 +213,11 @@ func TestAWSGetCredentials_webIdentityToken(t *testing.T) {
 		},
 	}
 
-	ts := servicemocks.MockAwsApiServer("STS", &[]*servicemocks.MockEndpoint{
+	endpoints := []*servicemocks.MockEndpoint{
 		servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 		servicemocks.MockStsGetCallerIdentityValidAssumedRoleEndpoint,
-	})
+	}
+	ts := servicemocks.MockAwsApiServer("STS", &endpoints)
 	defer ts.Close()
 	cfg.StsEndpoint = ts.URL
 
