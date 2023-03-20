@@ -216,7 +216,6 @@ func TestAWSGetCredentials_webIdentityToken(t *testing.T) {
 	mockStsEndpoints := []*servicemocks.MockEndpoint{
 		servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 		servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
-		servicemocks.MockStsGetCallerIdentityValidAssumedRoleEndpoint,
 	}
 	ts := servicemocks.MockAwsApiServer("STS", &mockStsEndpoints)
 	defer ts.Close()
@@ -262,7 +261,6 @@ func TestAWSGetCredentials_assumeRole(t *testing.T) {
 	mockStsEndpoints := []*servicemocks.MockEndpoint{
 		servicemocks.MockStsAssumeRoleValidEndpoint,
 		servicemocks.MockStsAssumeRoleValidEndpoint,
-		servicemocks.MockStsGetCallerIdentityValidAssumedRoleEndpoint,
 	}
 	ts := servicemocks.MockAwsApiServer("STS", &mockStsEndpoints)
 	defer ts.Close()
