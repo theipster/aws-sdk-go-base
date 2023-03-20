@@ -2407,6 +2407,7 @@ func TestAssumeRole(t *testing.T) {
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 			},
 		},
 
@@ -2450,6 +2451,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 			},
 		},
 
@@ -2466,6 +2468,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
 			},
 		},
 
@@ -2481,6 +2484,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			},
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"Policy": "{}"}),
 				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"Policy": "{}"}),
 			},
 		},
@@ -2589,6 +2593,7 @@ func TestAssumeRoleWithWebIdentity(t *testing.T) {
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 			},
 		},
 
@@ -2602,6 +2607,7 @@ func TestAssumeRoleWithWebIdentity(t *testing.T) {
 			SetConfig:                true,
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 			},
 		},
@@ -2617,6 +2623,7 @@ func TestAssumeRoleWithWebIdentity(t *testing.T) {
 			ExpandEnvVars:            true,
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 			},
 		},
@@ -2663,6 +2670,7 @@ role_session_name = %[2]s
 			},
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 			},
 		},
@@ -2717,6 +2725,7 @@ web_identity_token_file = no-such-file
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 			},
 		},
 
@@ -2732,6 +2741,7 @@ web_identity_token_file = no-such-file
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidWithOptions(map[string]string{"DurationSeconds": "3600"}),
 			},
 		},
 
@@ -2746,6 +2756,7 @@ web_identity_token_file = no-such-file
 			},
 			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleWithWebIdentityCredentials,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidWithOptions(map[string]string{"Policy": "{}"}),
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidWithOptions(map[string]string{"Policy": "{}"}),
 			},
 		},
