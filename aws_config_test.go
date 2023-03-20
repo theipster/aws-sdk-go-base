@@ -3310,6 +3310,7 @@ func TestLogger(t *testing.T) {
 
 	ts := servicemocks.MockAwsApiServer("STS", &[]*servicemocks.MockEndpoint{
 		servicemocks.MockStsGetCallerIdentityValidEndpoint,
+		servicemocks.MockStsGetCallerIdentityValidEndpoint,
 	})
 	defer ts.Close()
 	config.StsEndpoint = ts.URL
