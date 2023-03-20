@@ -3315,10 +3315,11 @@ func TestLogger(t *testing.T) {
 		SecretKey: servicemocks.MockStaticSecretKey,
 	}
 
-	ts := servicemocks.MockAwsApiServer("STS", &[]*servicemocks.MockEndpoint{
+	mockStsEndpoints := []*servicemocks.MockEndpoint{
 		servicemocks.MockStsGetCallerIdentityValidEndpoint,
 		servicemocks.MockStsGetCallerIdentityValidEndpoint,
-	})
+	}
+	ts := servicemocks.MockAwsApiServer("STS", &mockStsEndpoints)
 	defer ts.Close()
 	config.StsEndpoint = ts.URL
 
@@ -3354,5 +3355,10 @@ func TestLogger(t *testing.T) {
 		if a, e := line["@module"], expectedName; a != e {
 			t.Errorf("GetAwsAccountIDAndPartition: line %d: expected module %q, got %q", i+1, e, a)
 		}
+	}
+
+	numMockStsEndpoints := len(mockStsEndpoints)
+	if numMockStsEndpoints > 0 {
+		t.Errorf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 	}
 }

@@ -213,12 +213,12 @@ func TestAWSGetCredentials_webIdentityToken(t *testing.T) {
 		},
 	}
 
-	endpoints := []*servicemocks.MockEndpoint{
+	mockStsEndpoints := []*servicemocks.MockEndpoint{
 		servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 		servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 		servicemocks.MockStsGetCallerIdentityValidAssumedRoleEndpoint,
 	}
-	ts := servicemocks.MockAwsApiServer("STS", &endpoints)
+	ts := servicemocks.MockAwsApiServer("STS", &mockStsEndpoints)
 	defer ts.Close()
 	cfg.StsEndpoint = ts.URL
 
@@ -237,6 +237,11 @@ func TestAWSGetCredentials_webIdentityToken(t *testing.T) {
 		servicemocks.MockStsAssumeRoleWithWebIdentitySessionToken,
 		stscreds.WebIdentityProviderName, t)
 	testCredentialsProviderWrappedWithCache(creds, t)
+
+	numMockStsEndpoints := len(mockStsEndpoints)
+	if numMockStsEndpoints > 0 {
+		t.Errorf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
+	}
 }
 
 func TestAWSGetCredentials_assumeRole(t *testing.T) {
@@ -254,11 +259,12 @@ func TestAWSGetCredentials_assumeRole(t *testing.T) {
 		},
 	}
 
-	ts := servicemocks.MockAwsApiServer("STS", &[]*servicemocks.MockEndpoint{
+	mockStsEndpoints := []*servicemocks.MockEndpoint{
 		servicemocks.MockStsAssumeRoleValidEndpoint,
 		servicemocks.MockStsAssumeRoleValidEndpoint,
 		servicemocks.MockStsGetCallerIdentityValidAssumedRoleEndpoint,
-	})
+	}
+	ts := servicemocks.MockAwsApiServer("STS", &mockStsEndpoints)
 	defer ts.Close()
 	cfg.StsEndpoint = ts.URL
 
@@ -277,6 +283,11 @@ func TestAWSGetCredentials_assumeRole(t *testing.T) {
 		servicemocks.MockStsAssumeRoleSessionToken,
 		stscreds.ProviderName, t)
 	testCredentialsProviderWrappedWithCache(creds, t)
+
+	numMockStsEndpoints := len(mockStsEndpoints)
+	if numMockStsEndpoints > 0 {
+		t.Errorf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
+	}
 }
 
 var credentialsFileContentsEnv = `[myprofile]
