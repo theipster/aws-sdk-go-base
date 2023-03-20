@@ -2994,6 +2994,11 @@ func TestGetAwsConfigWithAccountIDAndPartition(t *testing.T) {
 			if part != tc.expectedPartition {
 				t.Errorf("expected partition (%s), got: %s", tc.expectedPartition, part)
 			}
+
+			numMockStsEndpoints := len(tc.mockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Errorf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
+			}
 		})
 	}
 }
