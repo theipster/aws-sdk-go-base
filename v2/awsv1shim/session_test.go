@@ -1157,7 +1157,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 				}
 			}
 
-			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
+			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
 			defer closeSts()
 
 			if err != nil {
@@ -1253,6 +1253,11 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 
 			if expected, actual := testCase.ExpectedRegion, aws.StringValue(actualSession.Config.Region); expected != actual {
 				t.Fatalf("expected region (%s), got: %s", expected, actual)
+			}
+
+			numMockStsEndpoints := len(testCase.MockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 			}
 		})
 	}
@@ -1554,9 +1559,10 @@ use_fips_endpoint = true
 				os.Setenv(k, v)
 			}
 
-			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", []*servicemocks.MockEndpoint{
+			mockStsEndpoints := []*servicemocks.MockEndpoint{
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
-			})
+			}
+			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", &mockStsEndpoints)
 			defer closeSts()
 
 			if err != nil {
@@ -1602,6 +1608,11 @@ use_fips_endpoint = true
 
 			if e, a := testCase.ExpectedUseDualStackEndpoint, actualSession.Config.UseDualStackEndpoint; e != a {
 				t.Errorf("expected UseDualStackEndpoint %q, got: %q", DualStackEndpointStateString(e), DualStackEndpointStateString(a))
+			}
+
+			numMockStsEndpoints := len(mockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 			}
 		})
 	}
@@ -1951,7 +1962,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			oldEnv := servicemocks.InitSessionTestEnv()
 			defer servicemocks.PopEnv(oldEnv)
 
-			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
+			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
 			defer closeSts()
 
 			if err != nil {
@@ -2024,6 +2035,11 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 
 			if diff := cmp.Diff(credentialsValue, testCase.ExpectedCredentialsValue, cmpopts.IgnoreFields(credentials.Value{}, "ProviderName")); diff != "" {
 				t.Fatalf("unexpected credentials: (- got, + expected)\n%s", diff)
+			}
+
+			numMockStsEndpoints := len(testCase.MockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 			}
 		})
 	}
@@ -2257,7 +2273,7 @@ web_identity_token_file = no-such-file
 				os.Setenv(k, v)
 			}
 
-			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
+			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
 			defer closeSts()
 
 			if err != nil {
@@ -2367,6 +2383,11 @@ web_identity_token_file = no-such-file
 
 			if diff := cmp.Diff(credentialsValue, testCase.ExpectedCredentialsValue, cmpopts.IgnoreFields(credentials.Value{}, "ProviderName")); diff != "" {
 				t.Fatalf("unexpected credentials: (- got, + expected)\n%s", diff)
+			}
+
+			numMockStsEndpoints := len(testCase.MockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 			}
 		})
 	}
