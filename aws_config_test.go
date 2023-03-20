@@ -1069,8 +1069,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 				}
 			}
 
-			// TODO check exhausted
-			closeSts, _, stsEndpoint := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
+			closeSts, _, stsEndpoint := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
 			defer closeSts()
 
 			testCase.Config.StsEndpoint = stsEndpoint
@@ -1150,6 +1149,11 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 
 			if expected, actual := testCase.ExpectedRegion, awsConfig.Region; expected != actual {
 				t.Fatalf("expected region (%s), got: %s", expected, actual)
+			}
+
+			numMockStsEndpoints := len(testCase.MockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 			}
 		})
 	}
@@ -2511,7 +2515,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			oldEnv := servicemocks.InitSessionTestEnv()
 			defer servicemocks.PopEnv(oldEnv)
 
-			closeSts, _, stsEndpoint := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
+			closeSts, _, stsEndpoint := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
 			defer closeSts()
 
 			testCase.Config.StsEndpoint = stsEndpoint
@@ -2566,6 +2570,11 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 
 			if diff := cmp.Diff(credentialsValue, testCase.ExpectedCredentialsValue, cmpopts.IgnoreFields(aws.Credentials{}, "Expires")); diff != "" {
 				t.Fatalf("unexpected credentials: (- got, + expected)\n%s", diff)
+			}
+
+			numMockStsEndpoints := len(testCase.MockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 			}
 		})
 	}
@@ -2797,7 +2806,7 @@ web_identity_token_file = no-such-file
 				os.Setenv(k, v)
 			}
 
-			closeSts, _, stsEndpoint := mockdata.GetMockedAwsApiSession("STS", testCase.MockStsEndpoints)
+			closeSts, _, stsEndpoint := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
 			defer closeSts()
 
 			testCase.Config.StsEndpoint = stsEndpoint
@@ -2889,6 +2898,11 @@ web_identity_token_file = no-such-file
 
 			if diff := cmp.Diff(credentialsValue, testCase.ExpectedCredentialsValue, cmpopts.IgnoreFields(aws.Credentials{}, "Expires")); diff != "" {
 				t.Fatalf("unexpected credentials: (- got, + expected)\n%s", diff)
+			}
+
+			numMockStsEndpoints := len(testCase.MockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
 			}
 		})
 	}
