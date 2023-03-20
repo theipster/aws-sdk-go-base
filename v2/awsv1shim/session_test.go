@@ -660,7 +660,6 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
-				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
@@ -1559,9 +1558,7 @@ use_fips_endpoint = true
 				os.Setenv(k, v)
 			}
 
-			mockStsEndpoints := []*servicemocks.MockEndpoint{
-				servicemocks.MockStsGetCallerIdentityValidEndpoint,
-			}
+			mockStsEndpoints := []*servicemocks.MockEndpoint{}
 			closeSts, mockStsSession, err := mockdata.GetMockedAwsApiSession("STS", &mockStsEndpoints)
 			defer closeSts()
 
