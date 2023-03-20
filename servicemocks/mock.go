@@ -424,6 +424,8 @@ func MockAwsApiServer(svcName string, endpoints *[]*MockEndpoint) *httptest.Serv
 				w.Header().Set("Date", time.Now().Format(time.RFC1123))
 
 				fmt.Fprintln(w, e.Response.Body)
+
+				*endpoints = (*endpoints)[1:]
 				return
 			}
 		}
