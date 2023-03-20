@@ -659,7 +659,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleValidEndpoint,
-				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
