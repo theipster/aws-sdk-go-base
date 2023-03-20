@@ -14,8 +14,8 @@ import (
 )
 
 // GetMockedAwsApiSession establishes an AWS session to a simulated AWS API server for a given service and route endpoints.
-func GetMockedAwsApiSession(svcName string, endpoints []*servicemocks.MockEndpoint) (func(), *session.Session, error) {
-	ts := servicemocks.MockAwsApiServer(svcName, &endpoints)
+func GetMockedAwsApiSession(svcName string, endpoints *[]*servicemocks.MockEndpoint) (func(), *session.Session, error) {
+	ts := servicemocks.MockAwsApiServer(svcName, endpoints)
 
 	sc := credentials.NewStaticCredentials("accessKey", "secretKey", "")
 
