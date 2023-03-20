@@ -31,12 +31,7 @@ func TestGetAccountIDAndPartition(t *testing.T) {
 			AuthProviderName:     ec2rolecreds.ProviderName,
 			EC2MetadataEndpoints: append(servicemocks.Ec2metadata_securityCredentialsEndpoints, servicemocks.Ec2metadata_instanceIdEndpoint, servicemocks.Ec2metadata_iamInfoEndpoint),
 
-			IAMEndpoints: []*servicemocks.MockEndpoint{
-				{
-					Request:  &servicemocks.MockRequest{Method: "POST", Uri: "/", Body: "Action=GetUser&Version=2010-05-08"},
-					Response: &servicemocks.MockResponse{StatusCode: http.StatusOK, Body: servicemocks.IamResponse_GetUser_valid, ContentType: "text/xml"},
-				},
-			},
+			IAMEndpoints: []*servicemocks.MockEndpoint{},
 			ExpectedAccountID: servicemocks.Ec2metadata_iamInfoEndpoint_expectedAccountID,
 			ExpectedPartition: servicemocks.Ec2metadata_iamInfoEndpoint_expectedPartition,
 		},
@@ -44,12 +39,7 @@ func TestGetAccountIDAndPartition(t *testing.T) {
 			Description:          "Mimic the metadata service mocked by Hologram (https://github.com/AdRoll/hologram)",
 			AuthProviderName:     ec2rolecreds.ProviderName,
 			EC2MetadataEndpoints: servicemocks.Ec2metadata_securityCredentialsEndpoints,
-			IAMEndpoints: []*servicemocks.MockEndpoint{
-				{
-					Request:  &servicemocks.MockRequest{Method: "POST", Uri: "/", Body: "Action=GetUser&Version=2010-05-08"},
-					Response: &servicemocks.MockResponse{StatusCode: http.StatusForbidden, Body: servicemocks.IamResponse_GetUser_unauthorized, ContentType: "text/xml"},
-				},
-			},
+			IAMEndpoints: []*servicemocks.MockEndpoint{},
 			STSEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},

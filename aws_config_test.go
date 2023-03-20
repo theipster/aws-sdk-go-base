@@ -660,7 +660,6 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
 				servicemocks.MockStsAssumeRoleValidEndpoint,
-				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -994,7 +993,6 @@ aws_access_key_id = ProfileSharedCredentialsAccessKey
 aws_secret_access_key = ProfileSharedCredentialsSecretKey
 `,
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
-				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 			ExpectedCredentialsValue: mockdata.MockEnvCredentials,
