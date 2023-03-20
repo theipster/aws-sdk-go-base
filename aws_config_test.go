@@ -1157,7 +1157,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 	}
 }
 
-func TestThreeCommonEnvGetAwsConfig(t *testing.T) {
+func TestMultipleCommonEnvGetAwsConfig(t *testing.T) {
 	testCases := []struct {
 		Configs                  []*Config
 		Description              string
@@ -1291,8 +1291,7 @@ func TestThreeCommonEnvGetAwsConfig(t *testing.T) {
 				os.Setenv(k, v)
 			}
 
-			for invocation := 0; invocation < 3; invocation++ {
-				testCaseConfig := testCase.Configs[invocation]
+			for _, testCaseConfig := range testCase.Configs {
 				testCaseConfig.StsEndpoint = stsEndpoint
 
 				ctx, awsConfig, err := GetAwsConfig(context.Background(), testCaseConfig)
