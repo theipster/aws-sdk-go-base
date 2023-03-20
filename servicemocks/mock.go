@@ -414,6 +414,10 @@ func MockAwsApiServer(svcName string, endpoints *[]*MockEndpoint) *httptest.Serv
 			svcName, r.Method, r.RequestURI, requestBody)
 
 		for _, e := range *endpoints {
+			log.Printf("[DEBUG2] pre-checking endpoint: %s", e.Request.Body)
+		}
+
+		for _, e := range *endpoints {
 			log.Printf("[DEBUG2] checking endpoint: %s", e.Request.Body)
 			if r.Method == e.Request.Method && r.RequestURI == e.Request.Uri && requestBody == e.Request.Body {
 				log.Printf("[DEBUG] Mocked %s API responding with %d: %s",
