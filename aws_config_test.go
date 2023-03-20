@@ -2914,6 +2914,7 @@ func TestGetAwsConfigWithAccountIDAndPartition(t *testing.T) {
 			mockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
 		{
