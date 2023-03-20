@@ -2913,6 +2913,7 @@ func TestGetAwsConfigWithAccountIDAndPartition(t *testing.T) {
 			expectedAcctID: "222222222222", expectedPartition: "aws",
 			mockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
 		{
