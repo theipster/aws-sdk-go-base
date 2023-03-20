@@ -30,16 +30,15 @@ func TestGetAccountIDAndPartition(t *testing.T) {
 			Description:          "EC2 Metadata over iam:GetUser when using EC2 Instance Profile",
 			AuthProviderName:     ec2rolecreds.ProviderName,
 			EC2MetadataEndpoints: append(servicemocks.Ec2metadata_securityCredentialsEndpoints, servicemocks.Ec2metadata_instanceIdEndpoint, servicemocks.Ec2metadata_iamInfoEndpoint),
-
-			IAMEndpoints: []*servicemocks.MockEndpoint{},
-			ExpectedAccountID: servicemocks.Ec2metadata_iamInfoEndpoint_expectedAccountID,
-			ExpectedPartition: servicemocks.Ec2metadata_iamInfoEndpoint_expectedPartition,
+			IAMEndpoints:         []*servicemocks.MockEndpoint{},
+			ExpectedAccountID:    servicemocks.Ec2metadata_iamInfoEndpoint_expectedAccountID,
+			ExpectedPartition:    servicemocks.Ec2metadata_iamInfoEndpoint_expectedPartition,
 		},
 		{
 			Description:          "Mimic the metadata service mocked by Hologram (https://github.com/AdRoll/hologram)",
 			AuthProviderName:     ec2rolecreds.ProviderName,
 			EC2MetadataEndpoints: servicemocks.Ec2metadata_securityCredentialsEndpoints,
-			IAMEndpoints: []*servicemocks.MockEndpoint{},
+			IAMEndpoints:         []*servicemocks.MockEndpoint{},
 			STSEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
