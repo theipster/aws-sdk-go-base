@@ -411,6 +411,7 @@ aws_secret_access_key = SharedConfigurationSourceSecretKey
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -561,6 +562,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 			SharedCredentialsFile: `
@@ -608,6 +610,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -637,6 +640,7 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			ExpectedRegion:             "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
 		},
@@ -654,6 +658,8 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
@@ -672,6 +678,8 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 			ExpectedRegion:           "us-east-1",
 			MockStsEndpoints: []*servicemocks.MockEndpoint{
 				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsAssumeRoleValidEndpoint,
 				servicemocks.MockStsGetCallerIdentityValidEndpoint,
 			},
