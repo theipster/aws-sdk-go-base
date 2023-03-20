@@ -1271,9 +1271,55 @@ func TestThreeCommonEnvGetAwsConfig(t *testing.T) {
 		Configs                  []*Config
 		Description              string
 		EnableWebIdentityEnvVars bool
+		EnvironmentVariables     map[string]string
 		ExpectedCredentialsValue aws.Credentials
 		MockStsEndpoints         []*servicemocks.MockEndpoint
 	}{
+		{
+			Configs: []*Config{
+				{
+					AssumeRole: &AssumeRole{
+						RoleARN:     servicemocks.MockStsAssumeRoleArn,
+						SessionName: servicemocks.MockStsAssumeRoleSessionName,
+						Duration:    1 * time.Hour,
+					},
+					Region: "us-east-1",
+				},
+				{
+					AssumeRole: &AssumeRole{
+						RoleARN:     servicemocks.MockStsAssumeRoleArn,
+						SessionName: servicemocks.MockStsAssumeRoleSessionName,
+						Duration:    2 * time.Hour,
+					},
+					Region: "us-east-1",
+				},
+				{
+					AssumeRole: &AssumeRole{
+						RoleARN:     servicemocks.MockStsAssumeRoleArn,
+						SessionName: servicemocks.MockStsAssumeRoleSessionName,
+						Duration:    3 * time.Hour,
+					},
+					Region: "us-east-1",
+				},
+			},
+			Description: "environment AWS_ACCESS_KEY_ID config AssumeRoleARN access key",
+			EnvironmentVariables: map[string]string{
+				"AWS_ACCESS_KEY_ID":     servicemocks.MockEnvAccessKey,
+				"AWS_SECRET_ACCESS_KEY": servicemocks.MockEnvSecretKey,
+			},
+			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
+			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "7200"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "7200"}),
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "10800"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "10800"}),
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+			},
+		},
 		{
 			Configs: []*Config{
 				{
@@ -1349,6 +1395,10 @@ func TestThreeCommonEnvGetAwsConfig(t *testing.T) {
 
 			closeSts, _, stsEndpoint := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
 			defer closeSts()
+
+			for k, v := range testCase.EnvironmentVariables {
+				os.Setenv(k, v)
+			}
 
 			for invocation := 0; invocation < 3; invocation++ {
 				testCaseConfig := testCase.Configs[invocation]
