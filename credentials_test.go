@@ -256,6 +256,7 @@ func TestAWSGetCredentials_assumeRole(t *testing.T) {
 
 	ts := servicemocks.MockAwsApiServer("STS", &[]*servicemocks.MockEndpoint{
 		servicemocks.MockStsAssumeRoleValidEndpoint,
+		servicemocks.MockStsAssumeRoleValidEndpoint,
 		servicemocks.MockStsGetCallerIdentityValidAssumedRoleEndpoint,
 	})
 	defer ts.Close()
