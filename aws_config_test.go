@@ -1157,6 +1157,168 @@ aws_secret_access_key = DefaultSharedCredentialsSecretKey
 	}
 }
 
+func TestMultipleCommonEnvGetAwsConfig(t *testing.T) {
+	testCases := []struct {
+		Configs                  []*Config
+		Description              string
+		EnableWebIdentityEnvVars bool
+		EnvironmentVariables     map[string]string
+		ExpectedCredentialsValue aws.Credentials
+		MockStsEndpoints         []*servicemocks.MockEndpoint
+	}{
+		{
+			Configs: []*Config{
+				{
+					AssumeRole: &AssumeRole{
+						RoleARN:     servicemocks.MockStsAssumeRoleArn,
+						SessionName: servicemocks.MockStsAssumeRoleSessionName,
+						Duration:    1 * time.Hour,
+					},
+					Region: "us-east-1",
+				},
+				{
+					AssumeRole: &AssumeRole{
+						RoleARN:     servicemocks.MockStsAssumeRoleArn,
+						SessionName: servicemocks.MockStsAssumeRoleSessionName,
+						Duration:    2 * time.Hour,
+					},
+					Region: "us-east-1",
+				},
+				{
+					AssumeRole: &AssumeRole{
+						RoleARN:     servicemocks.MockStsAssumeRoleArn,
+						SessionName: servicemocks.MockStsAssumeRoleSessionName,
+						Duration:    3 * time.Hour,
+					},
+					Region: "us-east-1",
+				},
+			},
+			Description: "environment AWS_ACCESS_KEY_ID config AssumeRoleARN access key",
+			EnvironmentVariables: map[string]string{
+				"AWS_ACCESS_KEY_ID":     servicemocks.MockEnvAccessKey,
+				"AWS_SECRET_ACCESS_KEY": servicemocks.MockEnvSecretKey,
+			},
+			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
+			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "7200"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "7200"}),
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "10800"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "10800"}),
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+			},
+		},
+		{
+			Configs: []*Config{
+				{
+					AssumeRole: &AssumeRole{
+						RoleARN:     servicemocks.MockStsAssumeRoleArn,
+						SessionName: servicemocks.MockStsAssumeRoleSessionName,
+						Duration:    1 * time.Hour,
+					},
+					Region: "us-east-1",
+				},
+				{
+					AssumeRole: &AssumeRole{
+						RoleARN:     servicemocks.MockStsAssumeRoleArn,
+						SessionName: servicemocks.MockStsAssumeRoleSessionName,
+						Duration:    2 * time.Hour,
+					},
+					Region: "us-east-1",
+				},
+				{
+					AssumeRole: &AssumeRole{
+						RoleARN:     servicemocks.MockStsAssumeRoleArn,
+						SessionName: servicemocks.MockStsAssumeRoleSessionName,
+						Duration:    3 * time.Hour,
+					},
+					Region: "us-east-1",
+				},
+			},
+			Description:              "AssumeWebIdentity envvar AssumeRoleARN access key",
+			EnableWebIdentityEnvVars: true,
+			ExpectedCredentialsValue: mockdata.MockStsAssumeRoleCredentials,
+			MockStsEndpoints: []*servicemocks.MockEndpoint{
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "3600"}),
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "7200"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "7200"}),
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleWithWebIdentityValidEndpoint,
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "10800"}),
+				servicemocks.MockStsAssumeRoleValidEndpointWithOptions(map[string]string{"DurationSeconds": "10800"}),
+				servicemocks.MockStsGetCallerIdentityValidEndpoint,
+			},
+		},
+	}
+
+	for _, testCase := range testCases {
+		testCase := testCase
+
+		t.Run(testCase.Description, func(t *testing.T) {
+			oldEnv := servicemocks.InitSessionTestEnv()
+			defer servicemocks.PopEnv(oldEnv)
+
+			if testCase.EnableWebIdentityEnvVars {
+				file, err := os.CreateTemp("", "aws-sdk-go-base-web-identity-token-file")
+				if err != nil {
+					t.Fatalf("unexpected error creating temporary web identity token file: %s", err)
+				}
+
+				defer os.Remove(file.Name())
+
+				err = os.WriteFile(file.Name(), []byte(servicemocks.MockWebIdentityToken), 0600)
+
+				if err != nil {
+					t.Fatalf("unexpected error writing web identity token file: %s", err)
+				}
+
+				os.Setenv("AWS_ROLE_ARN", servicemocks.MockStsAssumeRoleWithWebIdentityArn)
+				os.Setenv("AWS_ROLE_SESSION_NAME", servicemocks.MockStsAssumeRoleWithWebIdentitySessionName)
+				os.Setenv("AWS_WEB_IDENTITY_TOKEN_FILE", file.Name())
+			}
+
+			closeSts, _, stsEndpoint := mockdata.GetMockedAwsApiSession("STS", &testCase.MockStsEndpoints)
+			defer closeSts()
+
+			for k, v := range testCase.EnvironmentVariables {
+				os.Setenv(k, v)
+			}
+
+			for _, testCaseConfig := range testCase.Configs {
+				testCaseConfig.StsEndpoint = stsEndpoint
+
+				ctx, awsConfig, err := GetAwsConfig(context.Background(), testCaseConfig)
+
+				if err != nil {
+					t.Fatalf("expected no error, got '%[1]T' error: %[1]s", err)
+				}
+
+				credentialsValue, err := awsConfig.Credentials.Retrieve(ctx)
+
+				if err != nil {
+					t.Fatalf("unexpected credentials Retrieve() error: %s", err)
+				}
+
+				if diff := cmp.Diff(credentialsValue, testCase.ExpectedCredentialsValue, cmpopts.IgnoreFields(aws.Credentials{}, "Expires")); diff != "" {
+					t.Fatalf("unexpected credentials: (- got, + expected)\n%s", diff)
+				}
+			}
+
+			numMockStsEndpoints := len(testCase.MockStsEndpoints)
+			if numMockStsEndpoints > 0 {
+				t.Fatalf("expected all mock endpoints exhausted, remaining: %d", numMockStsEndpoints)
+			}
+		})
+	}
+}
+
 func TestUserAgentProducts(t *testing.T) {
 	test.TestUserAgentProducts(t, awsSdkGoUserAgent, testUserAgentProducts)
 }
